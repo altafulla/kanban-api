@@ -1,0 +1,31 @@
+@startuml erm
+
+entity card { 
+  id:number, 
+  name:string,
+  description:string,
+  list:list
+  }
+
+entity list { 
+  id:number, 
+  name:string,
+  description:string
+  }
+
+entity board {
+  id:number,
+  name:string,
+  user:user
+  }
+
+entity user {
+  id:number,
+  username:string,
+  password:string,
+  }
+list ||..o{ card
+board ||..o{ list
+user ||..o{ board
+
+@enduml
