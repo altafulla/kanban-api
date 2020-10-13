@@ -33,6 +33,7 @@ namespace kanban
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSwaggerGen();
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlite("Data Source=kanban.db");
@@ -45,6 +46,13 @@ namespace kanban
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSwagger();
+            app.UseSwaggerUI(
+                c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Card API");
+                }
+            );
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

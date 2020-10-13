@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace kanban.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201013124509_InitialCreate")]
+    [Migration("20201013125248_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
