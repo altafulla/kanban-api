@@ -16,7 +16,7 @@ using Kanban.API.Domain.Services;
 using Kanban.API.Persistence.Repositories;
 using Kanban.API.Services;
 using Kanban.API.Persistence.Contexts;
-
+using AutoMapper;
 
 namespace kanban
 {
@@ -40,6 +40,8 @@ namespace kanban
             });
             services.AddScoped<ICardRepository, CardRepository>();
             services.AddScoped<ICardService, CardService>();
+
+            services.AddAutoMapper(typeof(Startup));
 
         }
 

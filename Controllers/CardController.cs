@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Kanban.API.Domain.Models;
 using Kanban.API.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -10,19 +11,22 @@ namespace Kanban.API.Controllers
     public class CardController : Controller
     {
         private readonly ICardService _cardService;
+        private readonly IMapper _mapper;
 
-        public CardController(ICardService cardService)
+        public CardController(ICardService cardService, IMapper mapper)
         {
             _cardService = cardService;
+            _mapper = mapper;
         }
 
 
         [HttpGet]
         // public ActionResult<IEnumerable<Card>> Get()
-        public async Task<IEnumerable<Card>> Get()
+        public async Task<IEnumerable<CardResponse>> Get()
         {
             var allCards = await _cardService.ListAsync();
-            return allCards;
+            var allCardsResponse = _mapper.Map<IEnumerable<Card>, IEnumerable<CardResponse>>(allCards);
+            return allCardsResponse;
         }
 
         // GET api/values/5
