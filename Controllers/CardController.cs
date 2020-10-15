@@ -40,7 +40,6 @@ namespace Kanban.API.Controllers
         [HttpPost]
         public ActionResult<CardCreate> Post([FromBody] CardCreate cardCreate)
         {
-            if (!ModelState.IsValid) return BadRequest();
             return StatusCode(201);
         }
 
