@@ -17,6 +17,8 @@ using Kanban.API.Persistence.Repositories;
 using Kanban.API.Services;
 using Kanban.API.Persistence.Contexts;
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 namespace kanban
 {
@@ -32,7 +34,10 @@ namespace kanban
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining(typeof(Startup)));
+
+
             services.AddSwaggerGen();
             services.AddDbContext<AppDbContext>(options =>
             {
@@ -42,6 +47,7 @@ namespace kanban
             services.AddScoped<ICardService, CardService>();
 
             services.AddAutoMapper(typeof(Startup));
+
 
         }
 
@@ -70,6 +76,7 @@ namespace kanban
             {
                 endpoints.MapControllers();
             });
+
         }
     }
 }

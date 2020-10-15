@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using FluentValidation;
 using Kanban.API.Domain.Models;
 using Kanban.API.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,6 @@ namespace Kanban.API.Controllers
     {
         private readonly ICardService _cardService;
         private readonly IMapper _mapper;
-
         public CardController(ICardService cardService, IMapper mapper)
         {
             _cardService = cardService;
@@ -38,8 +38,10 @@ namespace Kanban.API.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult<CardCreate> Post([FromBody] CardCreate cardCreate)
         {
+            if (!ModelState.IsValid) return BadRequest();
+            return StatusCode(201);
         }
 
         // PUT api/values/5
