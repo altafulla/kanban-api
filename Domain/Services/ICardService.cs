@@ -8,5 +8,6 @@ namespace Kanban.API.Domain.Services
     public interface ICardService
     {
         Task<IEnumerable<Card>> ListAsync();
+        Task<Card> GetByIdAsync(int id);
     }
 }

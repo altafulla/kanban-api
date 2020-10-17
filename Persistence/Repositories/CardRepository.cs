@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kanban.API.Persistence.Repositories
 {
-    public class CardRepository : BaseRepository, ICardRepository
+    public class CardRepository : BaseRepository<Card>, ICardRepository
     {
         public CardRepository(AppDbContext context) : base(context)
         {
