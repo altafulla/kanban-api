@@ -1,5 +1,5 @@
 using FluentValidation;
-using Kanban.API.Domain.Models;
+using Kanban.API.Domain.Resources;
 
 public class CardCreateValidator : AbstractValidator<CardCreate>
 {
