@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Kanban.API.Domain.Models;
 using Kanban.API.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Kanban.API.Persistence.Repositories
 {
@@ -40,12 +41,15 @@ namespace Kanban.API.Persistence.Repositories
         {
             if (entity == null) throw new ArgumentNullException("entity");
             await entities.AddAsync(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public Task UpdateAsync(T entity)
+        public void Update(T entity)
         {
-            throw new System.NotImplementedException();
+            if (entity == null) throw new ArgumentNullException("entity");
+            _context.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
+            _context.SaveChanges();
         }
     }
 }

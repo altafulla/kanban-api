@@ -21,8 +21,7 @@ namespace Kanban.API.Controllers
 
 
         [HttpGet]
-        // public ActionResult<IEnumerable<Card>> Get()
-        public async Task<IEnumerable<CardResponse>> Get()
+        public async Task<IEnumerable<CardResponse>> GetAllAsync()
         {
             var allCards = await _cardService.ListAsync();
             var allCardsResponse = _mapper.Map<IEnumerable<Card>, IEnumerable<CardResponse>>(allCards);
@@ -31,28 +30,36 @@ namespace Kanban.API.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Card>> Get(int id)
+        public async Task<ActionResult<CardResponse>> GetByIdAsync(int id)
         {
-            return await _cardService.GetByIdAsync(id);
+            var card = await _cardService.GetByIdAsync(id);
+            var cardResponse = _mapper.Map<Card, CardResponse>(card);
+            return cardResponse;
         }
 
         // POST api/values
         [HttpPost]
-        public ActionResult<CardCreate> Post([FromBody] CardCreate cardCreate)
+        public async Task<ActionResult<CardCreate>> PostAsync([FromBody] CardCreate cardCreate)
         {
+            var card = _mapper.Map<CardCreate, Card>(cardCreate);
+            await _cardService.InsertAsync(card);
             return StatusCode(201);
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // PUT api/values
+        [HttpPut]
+        public ActionResult<CardCreate> Put([FromBody] CardCreate cardCreate)
         {
+            var card = _mapper.Map<CardCreate, Card>(cardCreate);
+            _cardService.Update(card);
+            return StatusCode(201);
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async void Delete(int id)
         {
+            await _cardService.DeleteAsync(id);
         }
     }
 }

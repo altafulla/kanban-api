@@ -16,16 +16,29 @@ namespace Kanban.API.Services
             this._cardRepository = cardRepository;
         }
 
-        public async Task<IEnumerable<Card>> ListAsync()
-        {
-            return await _cardRepository.ListAsync();
-        }
+        public async Task<IEnumerable<Card>> ListAsync() => await _cardRepository.ListAsync();
 
         public async Task<Card> GetByIdAsync(int id)
         {
             return await _cardRepository.GetByIdAsync(id);
         }
 
+        public async Task DeleteAsync(int id)
+        {
+            await _cardRepository.DeleteAsync(id);
+        }
+
+        public async Task<Card> InsertAsync(Card card)
+        {
+            await _cardRepository.InsertAsync(card);
+            return card;
+        }
+
+        public Card Update(Card card)
+        {
+            _cardRepository.Update(card);
+            return card;
+        }
 
     }
 }

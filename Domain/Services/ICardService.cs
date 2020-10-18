@@ -9,5 +9,8 @@ namespace Kanban.API.Domain.Services
     {
         Task<IEnumerable<Card>> ListAsync();
         Task<Card> GetByIdAsync(int id);
+        Task DeleteAsync(int id);
+        Task<Card> InsertAsync(Card card);
+        Card Update(Card card);
     }
 }
