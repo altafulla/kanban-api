@@ -1,6 +1,6 @@
 using AutoMapper;
+using kanban.API.Resources;
 using Kanban.API.Domain.Models;
-using Kanban.API.Domain.Resources;
 
 namespace Kanban.API.Mapping
 {
@@ -9,6 +9,8 @@ namespace Kanban.API.Mapping
         public ResourceToModelProfile()
         {
             CreateMap<CardCreate, Card>();
+            CreateMap<LoginCreate, User>();
+
         }
     }
 }

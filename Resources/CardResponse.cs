@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Kanban.API.Domain.Resources
+namespace kanban.API.Resources
 {
     public class CardResponse
     {

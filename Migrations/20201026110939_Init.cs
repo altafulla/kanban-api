@@ -2,7 +2,7 @@
 
 namespace kanban.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,8 +12,9 @@ namespace kanban.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: true),
-                    Password = table.Column<string>(nullable: true)
+                    Deleted = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    Password = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,6 +27,7 @@ namespace kanban.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Deleted = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     IsVisible = table.Column<bool>(nullable: false),
@@ -48,9 +50,11 @@ namespace kanban.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Deleted = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     IsVisible = table.Column<bool>(nullable: false),
+                    userId = table.Column<int>(nullable: true),
                     BoardId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -62,6 +66,12 @@ namespace kanban.Migrations
                         principalTable: "Boards",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Cardlists_Users_userId",
+                        column: x => x.userId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -70,6 +80,7 @@ namespace kanban.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Deleted = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     CardlistId = table.Column<int>(nullable: false)
@@ -87,18 +98,28 @@ namespace kanban.Migrations
 
             migrationBuilder.InsertData(
                 table: "Cardlists",
-                columns: new[] { "Id", "BoardId", "Description", "IsVisible", "Name" },
-                values: new object[] { 100, null, "Demo Cardlist", false, "Cardlist 100" });
+                columns: new[] { "Id", "BoardId", "Deleted", "Description", "IsVisible", "Name", "userId" },
+                values: new object[] { 100, null, false, "Demo Cardlist", false, "Cardlist 100", null });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Deleted", "Name", "Password" },
+                values: new object[] { 100, false, "Pedro", "AQAAAAEAACcQAAAAECpMqBSbOCbe+QRJp85XRYcSRpnedd/uP6ZMpaJSGtUOmuRYb/Z5sVTSKyuHsoSPbg==" });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Deleted", "Name", "Password" },
+                values: new object[] { 101, false, "Altafulla", "AQAAAAEAACcQAAAAECpMqBSbOCbe+QRJp85XRYcSRpnedd/uP6ZMpaJSGtUOmuRYb/Z5sVTSKyuHsoSPbg==" });
 
             migrationBuilder.InsertData(
                 table: "Cards",
-                columns: new[] { "Id", "CardlistId", "Description", "Name" },
-                values: new object[] { 100, 100, null, "Card 100" });
+                columns: new[] { "Id", "CardlistId", "Deleted", "Description", "Name" },
+                values: new object[] { 100, 100, false, null, "Card 100" });
 
             migrationBuilder.InsertData(
                 table: "Cards",
-                columns: new[] { "Id", "CardlistId", "Description", "Name" },
-                values: new object[] { 101, 100, null, "Card 101" });
+                columns: new[] { "Id", "CardlistId", "Deleted", "Description", "Name" },
+                values: new object[] { 101, 100, false, null, "Card 101" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Boards_UserId",
@@ -109,6 +130,11 @@ namespace kanban.Migrations
                 name: "IX_Cardlists_BoardId",
                 table: "Cardlists",
                 column: "BoardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cardlists_userId",
+                table: "Cardlists",
+                column: "userId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cards_CardlistId",

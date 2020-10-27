@@ -17,11 +17,19 @@ namespace Kanban.API.Persistence.Contexts
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<User>().ToTable("Users");
+            builder.Entity<User>().HasKey(p => p.Id);
+            builder.Entity<User>().Property(p => p.Id).IsRequired().ValueGeneratedOnAdd();
+            builder.Entity<User>().Property(p => p.Name).IsRequired();
+            builder.Entity<User>().Property(p => p.Password).IsRequired();
+
+
             builder.Entity<Card>().ToTable("Cards");
             builder.Entity<Card>().HasKey(p => p.Id);
             builder.Entity<Card>().Property(p => p.Id).IsRequired().ValueGeneratedOnAdd();
             builder.Entity<Card>().Property(p => p.Name);
             builder.Entity<Card>().Property(p => p.Description);
+            //    builder.Entity<Card>().Property(p => p.Cardlist);
 
             builder.Entity<Cardlist>().ToTable("Cardlists");
             builder.Entity<Cardlist>().HasKey(p => p.Id);
@@ -44,7 +52,11 @@ namespace Kanban.API.Persistence.Contexts
             // builder.Entity<User>().Property(p => p.Name);
             // builder.Entity<User>().Property(p => p.Password);
 
-
+            builder.Entity<User>().HasData
+                (
+                new User { Id = 100, Name = "Pedro", Password = "AQAAAAEAACcQAAAAECpMqBSbOCbe+QRJp85XRYcSRpnedd/uP6ZMpaJSGtUOmuRYb/Z5sVTSKyuHsoSPbg==" },
+                new User { Id = 101, Name = "Altafulla", Password = "AQAAAAEAACcQAAAAECpMqBSbOCbe+QRJp85XRYcSRpnedd/uP6ZMpaJSGtUOmuRYb/Z5sVTSKyuHsoSPbg==" }
+                );
             builder.Entity<Card>().HasData
             (
                 new Card { Id = 100, Name = "Card 100", CardlistId = 100 },

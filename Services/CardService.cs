@@ -13,7 +13,7 @@ namespace Kanban.API.Services
             ICardRepository cardRepository
         )
         {
-            this._cardRepository = cardRepository;
+            this._cardRepository = cardRepository ?? throw new System.ArgumentNullException(nameof(cardRepository));
         }
 
         public async Task<IEnumerable<Card>> ListAsync() => await _cardRepository.ListAsync();
