@@ -4,10 +4,12 @@ using AutoMapper;
 using kanban.API.Resources;
 using Kanban.API.Domain.Models;
 using Kanban.API.Domain.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kanban.API.Controllers
 {
+    
     [Route("/api/[controller]")]
     public class CardController : Controller
     {
@@ -19,7 +21,7 @@ namespace Kanban.API.Controllers
             _mapper = mapper;
         }
 
-
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<CardResponse>> GetAllAsync()
         {
