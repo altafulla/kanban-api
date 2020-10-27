@@ -1,15 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Kanban.API.Domain.Repositories;
 using Kanban.API.Domain.Services;
@@ -17,8 +10,16 @@ using Kanban.API.Persistence.Repositories;
 using Kanban.API.Services;
 using Kanban.API.Persistence.Contexts;
 using AutoMapper;
-using FluentValidation;
 using FluentValidation.AspNetCore;
+using kanban.Domain.Repositories;
+using kanban.API.Persistence.Repositories;
+using kanban.API.Services;
+using kanban.Domain.Security;
+using kanban.Security;
+using kanban.Domain.Security.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System;
 
 namespace kanban
 {
@@ -46,10 +47,37 @@ namespace kanban
             });
             services.AddScoped<ICardRepository, CardRepository>();
             services.AddScoped<ICardService, CardService>();
-
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAuthService, IdentityAuthService>();
+            services.AddScoped<IPasswordHasher, IdentityPasswordHasher>();
+            services.AddScoped<ITokenHandler, IdentityTokenHandler>();
+            services.AddScoped<ITokenOptions, TokenOptions>();
             services.AddAutoMapper(typeof(Startup));
 
+            
+            services.Configure<TokenOptions>(Configuration.GetSection("TokenOptions"));
+            var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
+            var signingConfigurations = new SigningConfigurations(tokenOptions.Secret);
+            services.AddSingleton(signingConfigurations);
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(jwtBearerOptions =>
+                {
+                    jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = tokenOptions.Issuer,
+                        ValidAudience = tokenOptions.Audience,
+                        IssuerSigningKey = signingConfigurations.SecurityKey,
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
+
+            services.AddAutoMapper(this.GetType().Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

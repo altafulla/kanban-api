@@ -22,7 +22,8 @@ namespace kanban.Security
 
         public bool PasswordMatches(string providedPassword, string passwordHash)
         {
-            PasswordVerificationResult result = _actualHasher.VerifyHashedPassword(null, providedPassword, passwordHash);
+            //PasswordVerificationResult _result = _actualHasher.VerifyHashedPassword(null, providedPassword, passwordHash);
+            PasswordVerificationResult result = _actualHasher.VerifyHashedPassword(null, passwordHash, providedPassword);
             return result != PasswordVerificationResult.Failed;
 
 

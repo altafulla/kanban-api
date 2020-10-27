@@ -8,5 +8,7 @@ namespace Kanban.API.Domain.Models
         public string Description { get; set; }
         public bool IsVisible { get; set; }
         public IList<Card> Cards { set; get; } = new List<Card>();
+
+        public User user { set; get;}
     }
 }

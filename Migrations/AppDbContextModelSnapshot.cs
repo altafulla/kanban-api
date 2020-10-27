@@ -106,9 +106,14 @@ namespace kanban.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("userId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BoardId");
+
+                    b.HasIndex("userId");
 
                     b.ToTable("Cardlists");
 
@@ -133,14 +138,32 @@ namespace kanban.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 100,
+                            Deleted = false,
+                            Name = "Pedro",
+                            Password = "AQAAAAEAACcQAAAAECpMqBSbOCbe+QRJp85XRYcSRpnedd/uP6ZMpaJSGtUOmuRYb/Z5sVTSKyuHsoSPbg=="
+                        },
+                        new
+                        {
+                            Id = 101,
+                            Deleted = false,
+                            Name = "Altafulla",
+                            Password = "AQAAAAEAACcQAAAAECpMqBSbOCbe+QRJp85XRYcSRpnedd/uP6ZMpaJSGtUOmuRYb/Z5sVTSKyuHsoSPbg=="
+                        });
                 });
 
             modelBuilder.Entity("Kanban.API.Domain.Models.Board", b =>
@@ -164,6 +187,10 @@ namespace kanban.Migrations
                     b.HasOne("Kanban.API.Domain.Models.Board", null)
                         .WithMany("Cardlists")
                         .HasForeignKey("BoardId");
+
+                    b.HasOne("Kanban.API.Domain.Models.User", "user")
+                        .WithMany()
+                        .HasForeignKey("userId");
                 });
 #pragma warning restore 612, 618
         }

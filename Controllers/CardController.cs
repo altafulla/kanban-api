@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using FluentValidation;
+using kanban.API.Resources;
 using Kanban.API.Domain.Models;
-using Kanban.API.Domain.Resources;
 using Kanban.API.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 

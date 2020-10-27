@@ -1,10 +1,13 @@
 using FluentValidation;
-using Kanban.API.Domain.Resources;
+using kanban.API.Resources;
 
-public class CardCreateValidator : AbstractValidator<CardCreate>
+namespace Kanban.API.Validators
 {
-    public CardCreateValidator()
+    public class CardCreateValidator : AbstractValidator<CardCreate>
     {
-        RuleFor(cardc => cardc.Name).NotNull();
+        public CardCreateValidator()
+        {
+            RuleFor(cardc => cardc.Name).NotNull();
+        }
     }
 }

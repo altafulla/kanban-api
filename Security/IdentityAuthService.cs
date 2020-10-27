@@ -1,5 +1,6 @@
 ﻿using kanban.Domain.Communication;
 using kanban.Domain.Security;
+using Kanban.API.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +10,56 @@ namespace kanban.Security
 {
     public class IdentityAuthService : IAuthService
     {
-        public Task<TokenResponse> CreateAccessTokenAsync(string email, string password)
+        private readonly IUserService _userService;
+        private readonly IPasswordHasher _passwordHasher;
+        private readonly ITokenHandler _tokenHandler;
+
+        public IdentityAuthService(IUserService userService, IPasswordHasher passwordHasher, ITokenHandler tokenHandler)
         {
-            throw new NotImplementedException();
+            _tokenHandler = tokenHandler;
+            _passwordHasher = passwordHasher;
+            _userService = userService;
+        }
+        public async Task<TokenResponse> CreateAccessTokenAsync(string name, string password)
+        {
+            var user = await _userService.FindByNameAsync(name);
+
+            if(user == null || !_passwordHasher.PasswordMatches(password, user.Password))
+            {
+                return new TokenResponse(false, "Invalid credentials", null);
+            }
+
+            var token = _tokenHandler.CreateAccessToken(user);
+            return new TokenResponse(true, null, token);
         }
 
-        public Task<TokenResponse> RefreshTokenAsync(string refreshToken, string userEmail)
+        public async Task<TokenResponse> RefreshTokenAsync(string refreshToken, string userEmail)
         {
-            throw new NotImplementedException();
+            var token = _tokenHandler.TakeRefreshToken(refreshToken);
+
+            if (token == null)
+            {
+                return new TokenResponse(false, "Invalid refresh token.", null);
+            }
+
+            if (token.IsExpired())
+            {
+                return new TokenResponse(false, "Expired refresh token.", null);
+            }
+
+            var user = await _userService.FindByNameAsync(userEmail);
+            if (user == null)
+            {
+                return new TokenResponse(false, "Invalid refresh token.", null);
+            }
+
+            var accessToken = _tokenHandler.CreateAccessToken(user);
+            return new TokenResponse(true, null, accessToken);
         }
 
         public void RevokeRefreshToken(string refreshToken)
         {
-            throw new NotImplementedException();
+            _tokenHandler.RevokeRefreshToken(refreshToken);
         }
     }
 }
